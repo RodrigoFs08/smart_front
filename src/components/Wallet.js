@@ -112,6 +112,10 @@ console.log("testando com a carteira", address_)
         SetformVerify(true)
         setForm({ aprovado:credenciado[0].toString(), nome: credenciado[2], email: credenciado[4], cpf: credenciado[3], tipo_pessoa: credenciado[1], categoria: credenciado[5] });
       }
+      if (credenciado[0] === true && !camposVazios) {
+        SetformVerify(true)
+        setForm({ aprovado:credenciado[0].toString(), nome: credenciado[2], email: credenciado[4], cpf: credenciado[3], tipo_pessoa: credenciado[1], categoria: credenciado[5] });
+      }
     } catch (error) {
       // Se tiver erro, o endereço não é credenciado
       SetformVerify(false)
