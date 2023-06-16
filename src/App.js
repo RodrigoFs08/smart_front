@@ -6,6 +6,7 @@ import Page1 from "./components/Page1";
 import Page2 from "./components/Page2";
 import Page3 from "./components/Page3";
 import Admin from "./components/Admin";
+import 'typeface-josefin-sans';
 
 const App = () => {
   const [address, setAddress] = useState("");

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import detectEthereumProvider from '@metamask/detect-provider';
 import Web3 from 'web3';
-import { Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Card,Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import abi from '../contracts/abi/1_credenciamento.json'; // Importe o arquivo ABI
 import PropTypes from 'prop-types';
 
-const contractAddress_ = '0x07336Db9D7E17b5976E88e48C96c25F613CeB619';
+const contractAddress_ = '0xF64f1f2FF5D8A9999F4e2c28e8Bce67b57BaD3D7';
 
 const Wallet = ({ onAddressChange }) => {
   const [address, setAddress] = useState("");
@@ -54,7 +54,7 @@ const Wallet = ({ onAddressChange }) => {
       setTimeout(() => {
         setTransactionResult(null);
         window.location.reload();
-      }, 10000);
+      }, 3000);
     } catch (error) {
       setTransactionResult({
         success: false,
@@ -70,7 +70,7 @@ const Wallet = ({ onAddressChange }) => {
 
     if (provider) {
       await provider.request({ method: 'eth_requestAccounts' });
-      startApp(provider);
+      startApp();
     } else {
       console.log('Por favor, instale MetaMask!');
     }
@@ -87,6 +87,7 @@ const Wallet = ({ onAddressChange }) => {
     const contract = new web3.eth.Contract(contractABI, contractAddress);
 console.log("testando com a carteira", address_)
     // Aqui vamos chamar a função do seu contrato
+    console.log("testando a função", window.ethereum.selectedAddress)
     return contract.methods.verificarCredenciamento(address_).call();
   }
 
@@ -97,14 +98,20 @@ console.log("testando com a carteira", address_)
     const accounts = await web3.eth.getAccounts();
     setAddress(accounts[0]);
     console.log("esse é o endereço" ,address)
+
     try {
       // Verificar credenciamento
       console.log(address)
       const credenciado = await verificarCredenciamento(address);
-      console.log(credenciado)
+      console.log("aqui",credenciado)
       // Se não tiver erro, o endereço é credenciado
-      SetformVerify(true)
-      setForm(credenciado);
+      const camposVazios = Object.keys(credenciado).slice(1).every(key => !credenciado[key] || credenciado[key] === "");
+      console.log("camposvazios",camposVazios)
+      // Se não tiver erro, o endereço é credenciado
+      if (credenciado[0] === false && !camposVazios) {
+        SetformVerify(true)
+        setForm({ aprovado:credenciado[0].toString(), nome: credenciado[2], email: credenciado[4], cpf: credenciado[3], tipo_pessoa: credenciado[1], categoria: credenciado[5] });
+      }
     } catch (error) {
       // Se tiver erro, o endereço não é credenciado
       SetformVerify(false)
@@ -122,7 +129,8 @@ console.log("testando com a carteira", address_)
 
   useEffect(() => {
     connectWallet();
-  }, []);
+    
+  }, [address]);
 
 
   return (
@@ -139,12 +147,16 @@ console.log("testando com a carteira", address_)
             <p>Bem vindo ADMIN!</p>
           ) : formVerify ? (
             <>
-              <p>Credenciado com sucesso! Informações: </p>
-              <p>Nome: {form.nome}</p>
-              <p>Email: {form.email}</p>
-              <p>CPF: {form.cpf}</p>
-              <p>Tipo de pessoa: {form.tipo_pessoa}</p>
-              <p>Categoria: {form.categoria}</p>
+                        <Card variant="outlined" style={{ backgroundColor: 'gray', marginLeft: 20, boxShadow: '0px 0px 15px 5px rgba(0, 0, 0, 0.25)', border: '1px solid black' }}>
+
+                        <p><strong>Aprovação: </strong>{form.aprovado}</p>
+              <p><strong>Nome: </strong>{form.nome}
+              <strong>        Email: </strong> {form.email}
+              <strong>        CPF: </strong> {form.cpf}</p>
+              <p><strong>Tipo de pessoa: </strong> {form.tipo_pessoa}
+              <strong>        Categoria: </strong> {form.categoria}</p>
+
+              </Card>
             </>
           ) : (
             <>

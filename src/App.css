@@ -24,6 +24,11 @@
   color: white;
 }
 
+body {
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+
 .App-link {
   color: #61dafb;
 }
