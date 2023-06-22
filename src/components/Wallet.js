@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 const contractAddress_ = '0xF64f1f2FF5D8A9999F4e2c28e8Bce67b57BaD3D7';
 
-const Wallet = ({ onAddressChange }) => {
+const Wallet = ({ onAddressChange,onApprovalChange  }) => {
   const [address, setAddress] = useState("");
   const adminWallet = "0x595dE3E08b9828cb768Fe6E0b694E8FDB004264A";
   const [open, setOpen] = useState(false);
@@ -114,7 +114,11 @@ console.log("testando com a carteira", address_)
       }
       if (credenciado[0] === true && !camposVazios) {
         SetformVerify(true)
+        
         setForm({ aprovado:credenciado[0].toString(), nome: credenciado[2], email: credenciado[4], cpf: credenciado[3], tipo_pessoa: credenciado[1], categoria: credenciado[5] });
+        if(typeof onApprovalChange === 'function'){
+          onApprovalChange(true);
+        }
       }
     } catch (error) {
       // Se tiver erro, o endereço não é credenciado
